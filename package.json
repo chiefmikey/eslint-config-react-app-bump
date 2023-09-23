@@ -1,0 +1,41 @@
+{
+  "name": "eslint-config-react-app-bump",
+  "version": "1.0.1",
+  "description": "A clone of the eslint-config-react-app package with updated dependencies",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chiefmikey/create-react-app.git",
+    "directory": "packages/eslint-config-react-app"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chiefmikey/create-react-app/issues"
+  },
+  "files": [
+    "base.js",
+    "index.js",
+    "jest.js"
+  ],
+  "peerDependencies": {
+    "eslint": "^8.0.0"
+  },
+  "dependencies": {
+    "@babel/core": "^7.22.20",
+    "@babel/eslint-parser": "^7.22.15",
+    "@rushstack/eslint-patch": "^1.4.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
+    "babel-preset-react-app": "^10.0.1",
+    "confusing-browser-globals": "^1.0.11",
+    "eslint-plugin-flowtype": "^8.0.3",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-jest": "^27.4.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-testing-library": "^6.0.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
