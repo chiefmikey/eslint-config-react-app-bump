@@ -1,15 +1,15 @@
 {
   "name": "eslint-config-react-app-bump",
   "version": "1.0.3",
-  "description": "A clone of the eslint-config-react-app package with updated dependencies",
+  "description": "A clone of the `eslint-config-react-app` package with updated dependencies",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chiefmikey/create-react-app.git",
+    "url": "https://github.com/chiefmikey/create-react-app-bump.git",
     "directory": "packages/eslint-config-react-app"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/chiefmikey/create-react-app/issues"
+    "url": "https://github.com/chiefmikey/create-react-app-bump/issues"
   },
   "files": [
     "base.js",
