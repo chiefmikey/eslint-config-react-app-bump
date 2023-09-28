@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-react-app-bump",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A clone of the eslint-config-react-app package with updated dependencies",
   "repository": {
     "type": "git",
