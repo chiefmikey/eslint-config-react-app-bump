@@ -32,6 +32,7 @@ jobs:
           git config --global user.name "Mikl Wolfe"
           git config --global user.email "wolfemikl@gmail.com"
           git checkout -b update-packages
+          npm i
 
           export STATUS=0
           for package in $(npm ls --json | jq '.dependencies | keys' | awk -F'"' '{print $2}'); do
