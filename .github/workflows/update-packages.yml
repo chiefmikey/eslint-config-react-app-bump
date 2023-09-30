@@ -1,0 +1,56 @@
+name: Update Packages
+
+on:
+  schedule:
+    - cron: '* */1 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  ncu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.UPDATE_PACKAGES }}
+
+      - env:
+          GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGES }}
+        run: |
+          git config --global user.name "Mikl Wolfe"
+          git config --global user.email "wolfemikl@gmail.com"
+          git checkout -b update-packages
+
+          export STATUS=0
+          for package in $(npm ls -g --json | jq '.dependencies | keys' | awk -F'"' '{print $2}'); do
+            subPackage="${package}"
+            if [ -z "${subPackage##*/*}" ]; then
+              subPackage="${package##*/}"
+            fi
+
+            v1="$(${subPackage} --version)"
+            export v1
+
+            if [ "$(npm view "${package}" version)" != "${v1}" ]; then
+              npm i -s "${package}"
+              v2="$(${subPackage} --version)"
+              export v2
+              echo "${package} (${v1} -> ${v2})"
+              export STATUS=1
+            fi;
+          done
+
+          [ ${STATUS} -eq 0 ] && echo "already up to date."
+
+          if git status | grep -q "Your branch is ahead"; then
+            git add .
+            git commit -am 'chore(dependencies): bump'
+            git push -f origin update-packages
+            gh pr create -l dependencies -t 'chore(dependencies): bump ${package} (${v1} -> ${v2})' -b '$(npm view ${package})'
+          fi
