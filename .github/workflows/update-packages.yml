@@ -35,14 +35,14 @@ jobs:
           npm i
 
           export STATUS=0
-          for package in $(npm ls --depth=0 --json | jq -r '.dependencies | keys[] as $k | "\($k)@\(.[$k].version)"'); do
+          for package in $(jq -r '.dependencies | to_entries[] | "\(.key)@\(.value)"' package.json); do
             packageName="${package%@*}"
-            v1="${package##*@}"
+            v1="${package##*^}"
             v2="$(npm view "${packageName}" version)"
 
             if [ "${v1}" != "${v2}" ]; then
-              npm i -s --save-exact "${package}@${v2}"
-              echo "${package} (${v1} -> ${v2})"
+              npm i -s --save-exact "${packageName}"
+              echo "${packageName} (${v1} -> ${v2})"
             fi
           done
 
@@ -52,5 +52,5 @@ jobs:
             git add package.json
             git commit -am 'chore(dependencies): bump'
             git push -f origin update-packages
-            gh pr create -l dependencies -t 'chore(dependencies): bump ${package} (${v1} -> ${v2})' -b '$(npm view ${package})'
+            gh pr create -l dependencies -t 'chore(dependencies): bump ${packageName} (${v1} -> ${v2})' -b '$(npm view ${packageName})'
           fi
