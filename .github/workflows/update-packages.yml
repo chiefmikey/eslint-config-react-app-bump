@@ -34,7 +34,7 @@ jobs:
           git checkout -b update-packages
           npm i
 
-          export STATUS=0
+          STATUS=0
           for package in $(jq -r '.dependencies | to_entries[] | "\(.key)@\(.value)"' package.json); do
             packageName="${package%@*}"
             v1="${package##*^}"
@@ -43,10 +43,11 @@ jobs:
             if [ "${v1}" != "${v2}" ]; then
               npm i -s --save-exact "${packageName}"
               echo "${packageName} (${v1} -> ${v2})"
+              STATUS=1
             fi
           done
 
-          [ ${STATUS} -eq 0 ] && echo "already up to date."
+          [ ${STATUS} -eq 0 ] && echo "Packages are already up to date"
 
           if git status | grep -q "Your branch is ahead"; then
             git add package.json
