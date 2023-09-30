@@ -35,28 +35,22 @@ jobs:
           npm i
 
           export STATUS=0
-          for package in $(npm ls --json | jq '.dependencies | keys' | awk -F'"' '{print $2}'); do
-            subPackage="${package}"
-            if [ -z "${subPackage##*/*}" ]; then
-              subPackage="${package##*/}"
-            fi
+          for package in $(npm ls --depth=0 --json | jq -r '.dependencies | keys[] as $k | "\($k)@\(.[$k].version)"'); do
+            packageName="${package%%@*}"
 
-            v1="$(${subPackage} --version)"
-            export v1
+            v1="${package##*@}"
+            v2="$(npm view "${packageName}" version)"
 
-            if [ "$(npm view "${package}" version)" != "${v1}" ]; then
-              npm i -s --save-exact "${package}"
-              v2="$(${subPackage} --version)"
-              export v2
+            if [ "${v1}" != "${v2}" ]; then
+              npm i -s --save-exact "${package}@${v2}"
               echo "${package} (${v1} -> ${v2})"
-              export STATUS=1
-            fi;
+            fi
           done
 
           [ ${STATUS} -eq 0 ] && echo "already up to date."
 
           if git status | grep -q "Your branch is ahead"; then
-            git add .
+            git add package.json
             git commit -am 'chore(dependencies): bump'
             git push -f origin update-packages
             gh pr create -l dependencies -t 'chore(dependencies): bump ${package} (${v1} -> ${v2})' -b '$(npm view ${package})'
