@@ -8,19 +8,23 @@ permissions:
   contents: write
 
 jobs:
-  ncu:
+  update-packages:
+    name: Update Packages
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-node@v3
+      - name: Set Up
+        uses: actions/setup-node@v3
         with:
           node-version: 'latest'
 
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.UPDATE_PACKAGES }}
 
-      - env:
+      - name: Run
+        env:
           GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGES }}
         run: |
           git config --global user.name "Mikl Wolfe"
