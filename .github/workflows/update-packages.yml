@@ -38,7 +38,7 @@ jobs:
           for package in $(jq -r '.dependencies | to_entries[] | "\(.key)@\(.value)"' package.json); do
             packageName="${package%@*}"
             v1="${package##*@}"
-            v1="${v1##*^}
+            v1="${v1##*^}"
             v2="$(npm view "${packageName}" version)"
 
             if [ "${v1}" != "${v2}" ]; then
