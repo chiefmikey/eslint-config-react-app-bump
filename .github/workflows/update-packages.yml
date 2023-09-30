@@ -47,11 +47,11 @@ jobs:
             fi
           done
 
-          [ ${STATUS} -eq 0 ] && echo "Packages are already up to date"
-
-          if git status | grep -q "Your branch is ahead"; then
+          if [ ${STATUS} -eq 1 ]; then
             git add package.json
             git commit -am 'chore(dependencies): bump'
             git push -f origin update-packages
             gh pr create -l dependencies -t 'chore(dependencies): bump ${packageName} (${v1} -> ${v2})' -b '$(npm view ${packageName})'
+          else
+            echo "Packages are already up to date"
           fi
