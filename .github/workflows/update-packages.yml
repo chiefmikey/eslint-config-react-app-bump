@@ -32,7 +32,7 @@ jobs:
           git checkout -b update-packages
 
           export STATUS=0
-          for package in $(npm ls -g --json | jq '.dependencies | keys' | awk -F'"' '{print $2}'); do
+          for package in $(npm ls --json | jq '.dependencies | keys' | awk -F'"' '{print $2}'); do
             subPackage="${package}"
             if [ -z "${subPackage##*/*}" ]; then
               subPackage="${package##*/}"
