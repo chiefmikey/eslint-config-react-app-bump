@@ -43,7 +43,7 @@ jobs:
             export v1
 
             if [ "$(npm view "${package}" version)" != "${v1}" ]; then
-              npm i -s "${package}"
+              npm i -s --save-exact "${package}"
               v2="$(${subPackage} --version)"
               export v2
               echo "${package} (${v1} -> ${v2})"
