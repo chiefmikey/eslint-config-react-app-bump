@@ -21,8 +21,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.UPDATE_PACKAGES }}
 
       - name: Run
         env:
