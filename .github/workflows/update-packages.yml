@@ -55,5 +55,5 @@ jobs:
             gh pr create -l dependencies -t "chore(dependencies): bump ${packageName} (${v1} -> ${v2})" -b "$(npm view ${packageName})"
             echo "${packageName} (${v1} -> ${v2})" >> $GITHUB_STEP_SUMMARY
           else
-            echo "Packages are already up to date"
+            echo "Packages are already up to date" >> $GITHUB_STEP_SUMMARY
           fi
