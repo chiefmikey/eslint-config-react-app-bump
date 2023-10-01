@@ -1,0 +1,96 @@
+name: Bump-N-Pub
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  npm-version:
+    name: npm Version
+    runs-on: ubuntu-latest
+    outputs:
+      TAG: ${{ steps.bump-steps.outputs.TAG }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-tags: true
+
+      - name: Bump Package Version
+        id: bump-steps
+        run: |
+          git config --global user.name "Mikl Wolfe"
+          git config --global user.email "wolfemikl@gmail.com"
+          VERSION=$(npm version patch -m "v%s")
+          git push --tags origin main
+          echo ::set-output name=TAG::"${VERSION}"
+
+  publish-github:
+    name: Publish Github
+    runs-on: ubuntu-latest
+    needs: npm-version
+    permissions:
+      contents: read
+      packages: write
+    env:
+      TAG: ${{ needs.npm-version.outputs.TAG }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.TAG }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+          registry-url: 'https://npm.pkg.github.com'
+
+      - name: Publish to Github
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-npm:
+    name: Publish Npm
+    runs-on: ubuntu-latest
+    needs: npm-version
+    env:
+      TAG: ${{ needs.npm-version.outputs.TAG }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.TAG }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-release:
+    name: Publish Release
+    runs-on: ubuntu-latest
+    needs: [npm-version, publish-github, publish-npm]
+    env:
+      TAG: ${{ needs.npm-version.outputs.TAG }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-tags: true
+
+      - name: Release Bumped Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGES }}
+        run: |
+          gh release create ${{ env.TAG }} --verify-tag --generate-notes --latest
