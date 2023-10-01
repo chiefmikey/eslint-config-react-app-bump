@@ -42,7 +42,7 @@ jobs:
             v2="$(npm view "${packageName}" version)"
 
             if [ "${v1}" != "${v2}" ]; then
-              npm i -s --save-exact "${packageName}"
+              npm i -s --no-package-lock "${packageName}"
               echo "${packageName} (${v1} -> ${v2})"
               STATUS=1
             fi
