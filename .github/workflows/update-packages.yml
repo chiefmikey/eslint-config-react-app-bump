@@ -1,4 +1,4 @@
-name: Update Packages
+name: npm Update Packages
 
 on:
   schedule:
@@ -26,7 +26,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGES }}
         run: |
-          set -x
           git config --global user.name "Mikl Wolfe"
           git config --global user.email "wolfemikl@gmail.com"
           git checkout -b update-packages
