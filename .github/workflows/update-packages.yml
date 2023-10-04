@@ -41,16 +41,15 @@ jobs:
             if [ "${v1}" != "${v2}" ]; then
               npm i -s --no-package-lock "${packageName}"
               echo "${packageName} (${v1} -> ${v2})"
+              git add package.json
+              git commit -am 'chore(dependencies): bump'
+              git push -f origin update-packages
+              gh pr create -l dependencies -t "chore(dependencies): bump ${packageName} (${v1} -> ${v2})" -b "$(npm view ${packageName})"
+              echo "${packageName} (${v1} -> ${v2})" >> $GITHUB_STEP_SUMMARY
               STATUS=1
             fi
           done
 
-          if [ ${STATUS} -eq 1 ]; then
-            git add package.json
-            git commit -am 'chore(dependencies): bump'
-            git push -f origin update-packages
-            gh pr create -l dependencies -t "chore(dependencies): bump ${packageName} (${v1} -> ${v2})" -b "$(npm view ${packageName})"
-            echo "${packageName} (${v1} -> ${v2})" >> $GITHUB_STEP_SUMMARY
-          else
+          if [ ${STATUS} -eq 0 ]; then
             echo "Packages are already up to date" >> $GITHUB_STEP_SUMMARY
           fi
