@@ -40,8 +40,8 @@ jobs:
             if [ "${v1}" != "${v2}" ]; then
               npm i -s --no-package-lock "${packageName}"
               LABEL="${packageName} (${v1} -> ${v2})"
-              MESSAGE="chore(dependencies): bump ${LABEL}"
-              BRANCH="${packageName}_(${v1}_->_${v2})"
+              MESSAGE="chore(deps): bump ${LABEL}"
+              BRANCH="bump_${packageName}_(${v1}_->_${v2})"
               echo "${LABEL}"
               git checkout -b "${BRANCH}"
               git add package.json
