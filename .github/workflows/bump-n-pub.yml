@@ -6,19 +6,21 @@ on:
       - main
 
 jobs:
-  npm-version:
-    name: npm Version
+  version:
+    name: Version
     runs-on: ubuntu-latest
     outputs:
-      TAG: ${{ steps.bump-steps.outputs.TAG }}
+      TAG: ${{ steps.bump.outputs.TAG }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-tags: true
 
-      - name: Bump Package Version
-        id: bump-steps
+      - name: Bump Version
+        id: bump
+        env:
+          GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGE }}
         run: |
           git config --global user.name "Mikl Wolfe"
           git config --global user.email "wolfemikl@gmail.com"
@@ -29,58 +31,58 @@ jobs:
   publish-github:
     name: Publish Github
     runs-on: ubuntu-latest
-    needs: npm-version
+    needs: version
     permissions:
       contents: read
       packages: write
     env:
-      TAG: ${{ needs.npm-version.outputs.TAG }}
+      TAG: ${{ needs.version.outputs.TAG }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ env.TAG }}
 
-      - name: Setup Node
+      - name: Setup
         uses: actions/setup-node@v3
         with:
           node-version: 'latest'
           registry-url: 'https://npm.pkg.github.com'
 
-      - name: Publish to Github
+      - name: Publish
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-npm:
-    name: Publish Npm
+    name: Publish npm
     runs-on: ubuntu-latest
-    needs: npm-version
+    needs: version
     env:
-      TAG: ${{ needs.npm-version.outputs.TAG }}
+      TAG: ${{ needs.version.outputs.TAG }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ env.TAG }}
 
-      - name: Setup Node
+      - name: Setup
         uses: actions/setup-node@v3
         with:
           node-version: 'latest'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Publish to npm
+      - name: Publish
         run: npm publish --access public
         env:
            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-release:
-    name: Publish Release
+    name: Release
     runs-on: ubuntu-latest
-    needs: [npm-version, publish-github, publish-npm]
+    needs: [version, publish-github, publish-npm]
     env:
-      TAG: ${{ needs.npm-version.outputs.TAG }}
+      TAG: ${{ needs.version.outputs.TAG }}
     permissions:
       contents: write
     steps:
@@ -89,7 +91,7 @@ jobs:
         with:
           fetch-tags: true
 
-      - name: Release Bumped Tag
+      - name: Release Tag
         env:
           GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGES }}
         run: |
