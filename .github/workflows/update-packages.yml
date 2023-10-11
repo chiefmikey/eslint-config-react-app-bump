@@ -1,4 +1,4 @@
-name: npm Update Packages
+name: Update Packages
 
 on:
   schedule:
