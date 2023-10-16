@@ -31,7 +31,9 @@ jobs:
           npm i
 
           STATUS=0
-          for package in $(jq -r '.dependencies | to_entries[] | "\(.key)@\(.value)"' package.json); do
+          UPDATES=()
+          PACKAGES=$(jq -r '.dependencies | to_entries[] | "\(.key)@\(.value)"' package.json)
+          for package in ${PACKAGES}; do
             packageName="${package%@*}"
             v1="${package##*@}"
             v1="${v1##*^}"
@@ -40,20 +42,22 @@ jobs:
             if [ "${v1}" != "${v2}" ]; then
               npm i -s --no-package-lock "${packageName}"
               LABEL="${packageName} (${v1} -> ${v2})"
-              MESSAGE="chore(deps): bump ${LABEL}"
-              BRANCH="bump_${packageName}_(${v1}_->_${v2})"
               echo "${LABEL}"
-              git checkout -b "${BRANCH}"
-              git add package.json
-              git commit -am "${MESSAGE}"
-              git push -f origin "${BRANCH}"
-              gh pr create -l dependencies -t "${MESSAGE}" -b "$(npm view ${packageName})"
-              git checkout main
               echo "${LABEL}" >> $GITHUB_STEP_SUMMARY
+              UPDATES+=("${LABEL}")
               STATUS=1
             fi
           done
 
           if [ ${STATUS} -eq 0 ]; then
-            echo "Packages are already up to date" >> $GITHUB_STEP_SUMMARY
+            echo "Packages are up to date" >> $GITHUB_STEP_SUMMARY
+          else
+            MESSAGE="chore(deps): bump"
+            BODY=$(printf "%s\n" ${UPDATES})
+            DATE=$(date +%Y-%m-%d)
+            git checkout -b "${DATE}"
+            git add package.json
+            git commit -am "${MESSAGE}"
+            git push -f origin "${DATE}"
+            gh pr create -l dependencies -t "${MESSAGE}" -b "${BODY}"
           fi
