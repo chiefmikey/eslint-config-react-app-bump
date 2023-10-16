@@ -29,7 +29,7 @@ jobs:
           git config --global user.email "wolfemikl@gmail.com"
           VERSION=$(npm version patch -m "v%s")
           git push origin main --tags
-          echo ::set-output name=TAG::"${VERSION}"
+          echo "TAG=${VERSION}" >> $GITHUB_OUTPUT
 
   publish-github:
     name: Publish Github
