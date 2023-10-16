@@ -57,8 +57,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm adduser --registry="https://npm.pkg.github.com"
-          npm publish
+          npm publish --registry="https://npm.pkg.github.com"
 
   publish-npm:
     name: Publish npm
