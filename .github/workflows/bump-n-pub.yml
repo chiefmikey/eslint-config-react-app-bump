@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - '.github/workflows/**'
 
 jobs:
   version:
@@ -80,7 +82,8 @@ jobs:
   publish-release:
     name: Release
     runs-on: ubuntu-latest
-    needs: [version, publish-github, publish-npm]
+    needs: [version]
+    if: needs.publish-npm.result == 'success'
     env:
       TAG: ${{ needs.version.outputs.TAG }}
     permissions:
