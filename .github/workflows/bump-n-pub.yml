@@ -98,6 +98,6 @@ jobs:
 
       - name: Release Tag
         env:
-          GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGES }}
+          GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGE }}
         run: |
           gh release create ${{ env.TAG }} --verify-tag --generate-notes --latest
