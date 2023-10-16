@@ -28,7 +28,6 @@ jobs:
           git config --global user.name "Mikl Wolfe"
           git config --global user.email "wolfemikl@gmail.com"
           VERSION=$(npm version patch -m "v%s")
-          git add package.json
           git push origin main --tags
           echo ::set-output name=TAG::"${VERSION}"
 
@@ -56,7 +55,7 @@ jobs:
       - name: Publish
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-npm:
     name: Publish npm
