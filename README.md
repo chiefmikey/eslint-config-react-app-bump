@@ -1,4 +1,4 @@
-# eslint-config-react-app-bump
+# eslint-config-react-app-*bump*
 
 ## An unmodified drop-in replacement clone of the `eslint-config-react-app` package with *updated dependencies*
 
