@@ -32,37 +32,11 @@ jobs:
           git push origin main --tags
           echo "TAG=${VERSION}" >> $GITHUB_OUTPUT
 
-  publish-github:
-    name: Publish Github
-    runs-on: ubuntu-latest
-    needs: version
-    permissions:
-      contents: read
-      packages: write
-    env:
-      TAG: ${{ needs.version.outputs.TAG }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ env.TAG }}
-
-      - name: Setup
-        uses: actions/setup-node@v3
-        with:
-          node-version: 'latest'
-          registry-url: 'https://npm.pkg.github.com'
-
-      - name: Publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm publish --registry="https://npm.pkg.github.com"
-
   publish-npm:
     name: Publish npm
     runs-on: ubuntu-latest
     needs: version
+    if: needs.version.result == 'success'
     env:
       TAG: ${{ needs.version.outputs.TAG }}
     steps:
