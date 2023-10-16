@@ -28,7 +28,9 @@ jobs:
         run: |
           git config --global user.name "Mikl Wolfe"
           git config --global user.email "wolfemikl@gmail.com"
+          git config --global user.signingkey "${{ secrets.GPG_KEY_ID }}"
           VERSION=$(npm version patch -m "v%s")
+          git commit --amend --no-edit --gpg-sign
           git push origin main --tags
           echo "TAG=${VERSION}" >> $GITHUB_OUTPUT
 

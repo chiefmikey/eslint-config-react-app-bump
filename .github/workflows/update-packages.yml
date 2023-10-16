@@ -28,6 +28,7 @@ jobs:
         run: |
           git config --global user.name "Mikl Wolfe"
           git config --global user.email "wolfemikl@gmail.com"
+          git config --global user.signingkey "${{ secrets.GPG_KEY_ID }}"
           npm i
 
           STATUS=0
@@ -57,7 +58,7 @@ jobs:
             BODY=$(printf "%s\n" "${UPDATES}")
             git checkout -b "${DATE}"
             git add package.json
-            git commit -am "${MESSAGE}"
+            git commit -am "${MESSAGE}" --gpg-sign
             git push -f origin "${DATE}"
             gh pr create -l dependencies -t "${MESSAGE}" -b "${BODY}"
           fi
