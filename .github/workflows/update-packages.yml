@@ -53,7 +53,7 @@ jobs:
             echo "Packages are up to date" >> $GITHUB_STEP_SUMMARY
           else
             MESSAGE="chore(deps): bump"
-            BODY=$(printf "%s\n" ${UPDATES})
+            BODY=$(printf "%s\n" "${UPDATES}")
             DATE=$(date +%Y-%m-%d)
             git checkout -b "${DATE}"
             git add package.json
