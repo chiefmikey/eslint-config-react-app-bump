@@ -1,6 +1,6 @@
 # eslint-config-react-app-bump
 
-## An unmodified drop-in replacement clone of the `eslint-config-react-app` package with updated dependencies
+## An unmodified drop-in replacement clone of the `eslint-config-react-app` package with **updated dependencies**
 
 This package includes the shareable ESLint configuration used by [Create React App](https://github.com/facebook/create-react-app).<br>
 Please refer to its documentation:
