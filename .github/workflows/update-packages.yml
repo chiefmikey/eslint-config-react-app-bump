@@ -45,16 +45,16 @@ jobs:
               echo "${LABEL}"
               echo "${LABEL}" >> $GITHUB_STEP_SUMMARY
               UPDATES+=("${LABEL}")
-              STATUS=1
+              STATUS+=1
             fi
           done
 
           if [ ${STATUS} -eq 0 ]; then
             echo "Packages are up to date" >> $GITHUB_STEP_SUMMARY
           else
-            MESSAGE="chore(deps): bump"
-            BODY=$(printf "%s\n" "${UPDATES}")
             DATE=$(date +%Y-%m-%d)
+            MESSAGE="chore(deps#${{ github.run_number }}): bump (${STATUS})"
+            BODY=$(printf "%s\n" "${UPDATES}")
             git checkout -b "${DATE}"
             git add package.json
             git commit -am "${MESSAGE}"
