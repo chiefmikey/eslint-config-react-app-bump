@@ -28,7 +28,11 @@ jobs:
         run: |
           git config --global user.name "Mikl Wolfe"
           git config --global user.email "wolfemikl@gmail.com"
-          git config --global user.signingkey "${{ secrets.GPG_KEY_ID }}"
+
+          gh api users/${{ github.actor }}/gpg_keys --paginate --jq '.[].key_id' > gpg_keys.txt
+          GPG_KEY_ID=$(head -n 1 gpg_keys.txt)
+
+          git config --global user.signingkey "${GPG_KEY_ID}"
           VERSION=$(npm version patch -m "v%s")
           git commit --amend --no-edit --gpg-sign
           git push origin main --tags
