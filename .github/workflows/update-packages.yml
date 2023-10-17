@@ -22,13 +22,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Configure
+        run: |
+          apt-get update && apt-get install -y gnupg
+          git config --global user.name "Mikl Wolfe"
+          git config --global user.email "wolfemikl@gmail.com"
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_KEY_ID }}
+          passphrase: ${{ secrets.GPG_PASS }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
       - name: Run
         env:
           GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGE }}
         run: |
-          git config --global user.name "Mikl Wolfe"
-          git config --global user.email "wolfemikl@gmail.com"
-          git config --global user.signingkey "${{ secrets.GPG_KEY_ID }}"
           npm i
 
           STATUS=0
@@ -58,7 +69,7 @@ jobs:
             BODY=$(printf "%s\n" "${UPDATES}")
             git checkout -b "${DATE}"
             git add package.json
-            git commit -am "${MESSAGE}" --gpg-sign
+            git commit -S -am "${MESSAGE}" --gpg-sign
             git push -f origin "${DATE}"
             gh pr create -l dependencies -t "${MESSAGE}" -b "${BODY}"
           fi
