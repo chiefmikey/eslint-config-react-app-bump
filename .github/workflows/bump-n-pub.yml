@@ -21,20 +21,27 @@ jobs:
         with:
           fetch-tags: true
 
+      - name: Configure
+        run: |
+          apt-get update && apt-get install -y gnupg
+          git config --global user.name "Mikl Wolfe"
+          git config --global user.email "wolfemikl@gmail.com"
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_KEY_ID }}
+          passphrase: ${{ secrets.GPG_PASS }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
       - name: Bump Version
         id: bump
         env:
           GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGE }}
         run: |
-          git config --global user.name "Mikl Wolfe"
-          git config --global user.email "wolfemikl@gmail.com"
-
-          gh api users/${{ github.actor }}/gpg_keys --paginate --jq '.[].key_id' > gpg_keys.txt
-          GPG_KEY_ID=$(head -n 1 gpg_keys.txt)
-
-          git config --global user.signingkey "${GPG_KEY_ID}"
           VERSION=$(npm version patch -m "v%s")
-          git commit --amend --no-edit --gpg-sign
+          git commit -S --amend --no-edit
           git push origin main --tags
           echo "TAG=${VERSION}" >> $GITHUB_OUTPUT
 
