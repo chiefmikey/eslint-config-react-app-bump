@@ -73,7 +73,6 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     needs: [version, publish-npm]
-    if: needs.publish-npm.result == 'success'
     env:
       TAG: ${{ needs.version.outputs.TAG }}
     permissions:

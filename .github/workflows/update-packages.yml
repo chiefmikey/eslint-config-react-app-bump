@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set Up
+      - name: Node
         uses: actions/setup-node@v3
         with:
           node-version: 'latest'
@@ -22,21 +22,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure
-        run: |
-          apt-get update && apt-get install -y gnupg
-          git config --global user.name "Mikl Wolfe"
-          git config --global user.email "wolfemikl@gmail.com"
-
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_KEY_ID }}
-          passphrase: ${{ secrets.GPG_PASS }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-
-      - name: Run
+      - name: Update
+        id: update
         env:
           GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGE }}
         run: |
@@ -60,7 +47,28 @@ jobs:
               STATUS+=1
             fi
           done
+          echo "updated=${STATUS}" >> $GITHUB_OUTPUT
 
+      - name: Configure
+        id: configure
+        if: steps.update.outputs.updated > 0
+        run: |
+          apt-get update && apt-get install -y gnupg
+          git config --global user.name "Mikl Wolfe"
+          git config --global user.email "wolfemikl@gmail.com"
+
+      - name: GPG
+        if: success()
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_KEY_ID }}
+          passphrase: ${{ secrets.GPG_PASS }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Push
+        if: success()
+        run: |
           if [ ${STATUS} -eq 0 ]; then
             echo "Packages are up to date" >> $GITHUB_STEP_SUMMARY
           else
