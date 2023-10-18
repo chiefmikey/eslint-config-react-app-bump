@@ -47,6 +47,9 @@ jobs:
               STATUS+=1
             fi
           done
+          if [ ${STATUS} -eq 0 ]; then
+            echo "Packages are up to date" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "updated=${STATUS}" >> $GITHUB_OUTPUT
 
       - name: Configure
@@ -70,15 +73,11 @@ jobs:
       - name: Push
         if: steps.gpg.outputs.status == 'success'
         run: |
-          if [ ${STATUS} -eq 0 ]; then
-            echo "Packages are up to date" >> $GITHUB_STEP_SUMMARY
-          else
-            DATE=$(date +%Y-%m-%d)
-            MESSAGE="chore(deps#${{ github.run_number }}): bump (${STATUS})"
-            BODY=$(printf "%s\n" "${UPDATES}")
-            git checkout -b "${DATE}"
-            git add package.json
-            git commit -S -am "${MESSAGE}" --gpg-sign
-            git push -f origin "${DATE}"
-            gh pr create -l dependencies -t "${MESSAGE}" -b "${BODY}"
-          fi
+          DATE=$(date +%Y-%m-%d)
+          MESSAGE="chore(deps#${{ github.run_number }}): bump (${STATUS})"
+          BODY=$(printf "%s\n" "${UPDATES}")
+          git checkout -b "${DATE}"
+          git add package.json
+          git commit -S -am "${MESSAGE}" --gpg-sign
+          git push -f origin "${DATE}"
+          gh pr create -l dependencies -t "${MESSAGE}" -b "${BODY}"
