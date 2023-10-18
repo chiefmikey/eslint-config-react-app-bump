@@ -36,6 +36,7 @@ jobs:
           git_commit_gpgsign: true
 
       - name: Bump Version
+        if: success()
         id: bump
         env:
           GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGE }}
