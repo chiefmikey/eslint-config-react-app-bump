@@ -60,7 +60,7 @@ jobs:
           ref: ${{ env.TAG }}
 
       - name: Setup
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 'latest'
           registry-url: 'https://registry.npmjs.org'
