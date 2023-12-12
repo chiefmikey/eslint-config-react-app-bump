@@ -73,7 +73,7 @@ jobs:
       - name: Push
         if: success()
         env:
-          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGE }}
         run: |
           DATE=$(date +%Y-%m-%d)
           MESSAGE="chore(deps#${{ github.run_number }}): bump (${STATUS})"
