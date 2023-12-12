@@ -62,7 +62,7 @@ jobs:
 
       - name: GPG
         id: gpg
-        if: steps.configure.outputs.status == 'success'
+        if: success()
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_KEY_ID }}
@@ -71,7 +71,7 @@ jobs:
           git_commit_gpgsign: true
 
       - name: Push
-        if: steps.gpg.outputs.status == 'success'
+        if: success()
         run: |
           DATE=$(date +%Y-%m-%d)
           MESSAGE="chore(deps#${{ github.run_number }}): bump (${STATUS})"
