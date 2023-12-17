@@ -76,7 +76,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.UPDATE_PACKAGE }}
         run: |
           DATE=$(date +%Y-%m-%d)
-          MESSAGE="chore(deps#${{ github.run_number }}): bump (${steps.update.outputs.updated})"
+          MESSAGE="chore(deps#${{ github.run_number }}): bump (${{ steps.update.outputs.updated }})"
           BODY=$(printf "%s\n" "${UPDATES}")
           git checkout -b "${DATE}"
           git add package.json
