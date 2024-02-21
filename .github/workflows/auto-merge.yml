@@ -1,4 +1,4 @@
-name: Auto Merge
+name: Auto-Merge
 
 on: pull_request
 
@@ -8,11 +8,11 @@ permissions:
 
 jobs:
   auto-merge:
-    name: Auto Merge
+    name: Auto-Merge
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login == 'chiefmikey' || github.actor == 'dependabot[bot]'
+    if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
-      - name: Run
+      - name: Enable auto-merge for Dependabot PRs
         run: gh pr merge "$PR_URL" --auto --squash --delete-branch --subject "$COMMIT_MESSAGE"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
