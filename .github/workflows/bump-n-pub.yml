@@ -7,10 +7,14 @@ on:
     paths-ignore:
       - '.github/workflows/**'
       - 'README.md'
+  pull_request:
+    types:
+      - closed
   workflow_dispatch: {}
 
 jobs:
   version:
+    if: github.event.pull_request.merged == true
     name: Version
     runs-on: ubuntu-latest
     outputs:
