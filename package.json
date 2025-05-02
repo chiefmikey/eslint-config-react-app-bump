@@ -19,20 +19,20 @@
     "eslint": "^8.0.0"
   },
   "dependencies": {
-    "@babel/core": "^7.24.5",
-    "@babel/eslint-parser": "^7.24.5",
-    "@rushstack/eslint-patch": "^1.10.3",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
-    "babel-preset-react-app": "^10.0.1",
+    "@babel/core": "^7.27.1",
+    "@babel/eslint-parser": "^7.27.1",
+    "@rushstack/eslint-patch": "^1.11.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "babel-preset-react-app": "^10.1.0",
     "confusing-browser-globals": "^1.0.11",
     "eslint-plugin-flowtype": "^8.0.3",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jest": "^28.5.0",
-    "eslint-plugin-jsx-a11y": "^6.8.0",
-    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jest": "^28.11.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^6.0.0",
-    "eslint-plugin-testing-library": "^7.0.0"
+    "eslint-plugin-testing-library": "^7.1.1"
   },
   "engines": {
     "node": ">=14.0.0"
